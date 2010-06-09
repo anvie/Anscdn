@@ -22,16 +22,21 @@ import (
 	"mime"
 	"utf8"
 	"flag"
+	"./anlog"
+	"./filemon"
 )
 
 const (
-	VERSION = "0.1 alpha"
+	VERSION = "0.2 beta"
 )
 
 var base_server string
 var serving_port string
+var store_dir string
 var strict bool
 var cache_only bool
+var file_mon bool
+var cache_expires int64
 
 func file_exists(file_path string) bool{
 	file, err := os.Open(file_path, os.O_RDONLY, 0)
@@ -81,16 +86,21 @@ func setHeaderCond(con *http.Conn, abs_path string, data []byte) {
 	}	
 }
 
-func Info(format string, v ...interface{}){fmt.Printf("[info] " + format, v);}
-func Warn(format string, v ...interface{}) {fmt.Printf("[warning] " + format, v);}
-func Error(format string, v ...interface{}) {fmt.Fprintf(os.Stderr,"[error] " + format, v);}
 
 func MainHandler(con *http.Conn, r *http.Request){
 	
 	url_path := r.URL.Path[1:]
 	
-	abs_path, _ := os.Getwd()
-	abs_path += "/" + url_path
+	var abs_path string
+	
+	if strings.HasPrefix(store_dir,"./"){
+		
+		abs_path, _ = os.Getwd()
+		abs_path = path.Join(abs_path, store_dir[1:], url_path)
+		
+	}else{
+		abs_path = path.Join(store_dir,url_path)
+	}
 	
 	dir_name, _ := path.Split(abs_path)
 	
@@ -98,12 +108,12 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		url_source := base_server + "/" + url_path
 		
-		Info("File `%s` first cached from `%s`.\n", abs_path, url_source)
+		anlog.Info("File `%s` first cached from `%s`.\n", abs_path, url_source)
 		
 		err := os.MkdirAll(dir_name,0755)
 		if err != nil {
 			fmt.Fprintf(con,"404 Not found (e)")
-			Error("Cannot MkdirAll. error: %s\n",err.String())
+			anlog.Error("Cannot MkdirAll. error: %s\n",err.String())
 			return
 		}
 		
@@ -111,7 +121,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		r, _, err := http.Get(url_source)
 		if err != nil {
-			Error("Cannot download data form `%s`\n", url_source)
+			anlog.Error("Cannot download data form `%s`\n", url_source)
 			fmt.Fprintf(con,"404 Not found (e)")
 			return
 		}
@@ -121,7 +131,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		if err != nil {
 			fmt.Fprintf(con,"404 Not found (e)")
-			Error("Cannot read url source body `%s`. error: %s\n", abs_path,err.String())
+			anlog.Error("Cannot read url source body `%s`. error: %s\n", abs_path,err.String())
 			return
 		}
 		
@@ -136,7 +146,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		// fmt.Printf("Content-type: %s\n",ctype)
 		if ext_type := mime.TypeByExtension(path.Ext(abs_path)); ext_type != "" {
 			if ext_type != ctype {
-				Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, ext_type, url_path )
+				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, ext_type, url_path )
 				if strict {
 					http.Error(con, "404", http.StatusNotFound)
 					return
@@ -147,7 +157,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		file, err := os.Open(abs_path,os.O_WRONLY | os.O_CREAT,0755)
 		if err != nil {
 			fmt.Fprintf(con,"404 Not found (e)")
-			Error("Cannot create file `%s`. error: %s\n", abs_path,err.String())
+			anlog.Error("Cannot create file `%s`. error: %s\n", abs_path,err.String())
 			return
 		}
 		defer file.Close()
@@ -157,7 +167,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 			bw, err := file.Write(data)
 			if err != nil {
 				fmt.Fprintf(con,"404 Not found (e)")
-				Error("Cannot write %d bytes data in file `%s`. error: %s\n", total_size, abs_path,err.String())
+				anlog.Error("Cannot write %d bytes data in file `%s`. error: %s\n", total_size, abs_path,err.String())
 				return
 			}
 			if bw >= total_size {
@@ -172,7 +182,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 			bw, err := con.Write(data)
 			if err != nil {
 				fmt.Fprintf(con,"404 Not found (e)")
-				Error("Cannot send file `%s`. error: %s\n", abs_path, err.String())
+				anlog.Error("Cannot send file `%s`. error: %s\n", abs_path, err.String())
 				return
 			}
 			if bw >= total_size {
@@ -193,7 +203,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		if err != nil{
 			fmt.Fprintf(con,"404 Not found (e)")
-			Error("Cannot open file `%s`. error: %s\n", abs_path,err.String())
+			anlog.Error("Cannot open file `%s`. error: %s\n", abs_path,err.String())
 			return
 		}
 		
@@ -206,7 +216,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		if err != nil && err != os.EOF {
 			fmt.Fprintf(con,"404 Not found (e)")
-			Error("Cannot read %d bytes data in file `%s`. error: %s\n", bufsize, abs_path,err.String())
+			anlog.Error("Cannot read %d bytes data in file `%s`. error: %s\n", bufsize, abs_path,err.String())
 			return 
 		}
 		
@@ -222,7 +232,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 					break
 				}
 				fmt.Fprintf(con,"404 Not found (e)")
-				Error("Cannot read %d bytes data in file `%s`. error: %s\n", bufsize, abs_path,err.String())
+				anlog.Error("Cannot read %d bytes data in file `%s`. error: %s\n", bufsize, abs_path,err.String())
 				return
 			}
 			con.Write(buff)
@@ -247,8 +257,11 @@ func main() {
 	
 	flag.StringVar(&bs,"base-server","","Base server address ex: 127.0.0.1:2194.")
 	flag.StringVar(&serving_port,"port","2194","Serving port.")
+	flag.StringVar(&store_dir,"store-dir","./data","Location path to store cached data.")
 	flag.BoolVar(&strict,"strict",true,"Strict mode. Don't cache invalid mime type.")
 	flag.BoolVar(&cache_only,"cache-only",false,"Don't serve cached file.")
+	flag.BoolVar(&file_mon,"file-mon",true,"Enable file cache monitor.")
+	flag.Int64Var(&cache_expires,"cx",1296000,"File deleted automatically after seconds time not accessed.\nWork only if `file-mon` enabled")
 	
 	flag.Parse()
 	
@@ -268,8 +281,14 @@ func main() {
 	if cache_only{
 		fmt.Println("Cache only")
 	}
+	if file_mon{
+		fmt.Println("File monitor enabled")
+		go filemon.StartFileMon(store_dir, cache_expires)
+	}
 	
-	Info("Serving on 0.0.0.0:" + serving_port + "... ready.\n" )
+	fmt.Printf("Store cached data in `%s`\n", store_dir)
+	
+	anlog.Info("Serving on 0.0.0.0:" + serving_port + "... ready.\n" )
 	
 	http.Handle("/", http.HandlerFunc(MainHandler))
 	http.ListenAndServe(":" + serving_port, nil)
