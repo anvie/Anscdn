@@ -83,7 +83,8 @@ func setHeaderCond(con *http.Conn, abs_path string, data []byte) {
         } else {
             con.SetHeader("Content-Type", "application/octet-stream") // generic binary
         }
-	}	
+	}
+	
 }
 
 
@@ -145,6 +146,13 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		// fmt.Printf("Content-type: %s\n",ctype)
 		if ext_type := mime.TypeByExtension(path.Ext(abs_path)); ext_type != "" {
+			
+			if endi := strings.IndexAny(ext_type,";"); endi > 1 {
+				ext_type = ext_type[0:endi]
+			}else{
+				ext_type = ext_type[0:]
+			}
+			
 			if ext_type != ctype {
 				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, ext_type, url_path )
 				if strict {
@@ -168,6 +176,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 			if err != nil {
 				fmt.Fprintf(con,"404 Not found (e)")
 				anlog.Error("Cannot write %d bytes data in file `%s`. error: %s\n", total_size, abs_path,err.String())
+				//file.Close()
 				return
 			}
 			if bw >= total_size {
@@ -175,9 +184,15 @@ func MainHandler(con *http.Conn, r *http.Request){
 			}
 		}
 		
+		//file.Close()
+		
 		// send to client for the first time.
 		setHeaderCond(con, abs_path, data)
-
+		
+		// set Last-modified header
+		lm,_ := filemon.GetLastModif(file)
+		con.SetHeader("Last-Modified", lm)
+		
 		for {
 			bw, err := con.Write(data)
 			if err != nil {
@@ -209,33 +224,43 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		defer file.Close()
 		
-		bufsize := 1024
+		bufsize := 1024*4
 		buff := make([]byte,bufsize+2)
-		
-		_, err = file.Read(buff)
+
+		sz, err := file.Read(buff)
 		
 		if err != nil && err != os.EOF {
 			fmt.Fprintf(con,"404 Not found (e)")
-			anlog.Error("Cannot read %d bytes data in file `%s`. error: %s\n", bufsize, abs_path,err.String())
+			anlog.Error("Cannot read %d bytes data in file `%s`. error: %s\n", sz, abs_path,err.String())
 			return 
 		}
 		
 		setHeaderCond(con, abs_path, buff)
 		
-		con.Write(buff)
+		// check for last-modified
+		//r.Header["If-Modified-Since"]
+		lm, _ := filemon.GetLastModif(file)
+		con.SetHeader("Last-Modified", lm)
+		
+		if r.Header["If-Modified-Since"] == lm {
+			con.WriteHeader(http.StatusNotModified)
+			return
+		}
+		
+		con.Write(buff[0:sz])
 		
 		for {
-			
-			_, err := file.Read(buff)
-			if err !=nil {
+			sz, err := file.Read(buff)
+			if err != nil {
 				if err == os.EOF {
+					con.Write(buff[0:sz])
 					break
 				}
 				fmt.Fprintf(con,"404 Not found (e)")
-				anlog.Error("Cannot read %d bytes data in file `%s`. error: %s\n", bufsize, abs_path,err.String())
+				anlog.Error("Cannot read %d bytes data in file `%s`. error: %s\n", sz, abs_path,err.String())
 				return
 			}
-			con.Write(buff)
+			con.Write(buff[0:sz])
 		}
 		
 	}

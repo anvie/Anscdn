@@ -96,6 +96,16 @@ func StartFileMon(store_dir string, cx int64){
 	
 }
 
+func GetLastModif(file *os.File) (rv string, err os.Error) {
+	rv = ""
+	st, err := file.Stat()
+	if err != nil {return rv, err;}
+
+	t := time.SecondsToLocalTime( st.Mtime_ns / 1e9 )
+ 	rv = t.Format(time.RFC1123)
+	return rv, err
+}
+
 /*
 func main(){
 	
