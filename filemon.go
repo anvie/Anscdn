@@ -54,11 +54,22 @@ func rmObsolete(fpath string){
 
 func processDir(p string){
 	
-	dir, _ := os.Open(p,os.O_RDONLY,0)
+
+	dir, err := os.Open(p,os.O_RDONLY,0)
+
+	if err != nil {
+	   anlog.Error("Cannot read dir `%s`. e: %s\n", p, err.String())
+	   return
+	}
 	
 	defer dir.Close()
 	
-	files, _ := dir.Readdirnames(10)
+	files, err := dir.Readdirnames(10)
+
+	if err != nil {
+	   anlog.Error("Cannot read dir `%s`. e: %s\n", p, err.String())
+	   return
+	}
 	
 	for _, f := range files{
 		if strings.HasPrefix(f,".DS_"){

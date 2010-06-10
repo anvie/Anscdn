@@ -316,6 +316,6 @@ func main() {
 	anlog.Info("Serving on 0.0.0.0:" + serving_port + "... ready.\n" )
 	
 	http.Handle("/", http.HandlerFunc(MainHandler))
-	http.ListenAndServe(":" + serving_port, nil)
+	http.ListenAndServe("0.0.0.0:" + serving_port, nil)
 }
 
