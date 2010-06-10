@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	VERSION = "0.2 beta"
+	VERSION = "0.3 beta"
 )
 
 var base_server string
@@ -37,6 +37,7 @@ var strict bool
 var cache_only bool
 var file_mon bool
 var cache_expires int64
+var clear_cache_path string
 
 func file_exists(file_path string) bool{
 	file, err := os.Open(file_path, os.O_RDONLY, 0)
@@ -87,10 +88,22 @@ func setHeaderCond(con *http.Conn, abs_path string, data []byte) {
 	
 }
 
+func validUrlPath(url_path string) bool{
+	return strings.Index(url_path,"../") < 1
+}
+
+func write(c *http.Conn, f string, v ...interface{}){fmt.Fprintf(c,f,v);}
 
 func MainHandler(con *http.Conn, r *http.Request){
 	
 	url_path := r.URL.Path[1:]
+	
+	// security check
+	if !validUrlPath(url_path){
+		write(con,"Invalid url path")
+		anlog.Warn("Invalid url_path: %s\n",url_path)
+		return
+	}
 	
 	var abs_path string
 	
@@ -267,6 +280,59 @@ func MainHandler(con *http.Conn, r *http.Request){
 	
 }
 
+func ClearCacheHandler(c *http.Conn, r *http.Request){
+
+	path_to_clear := r.FormValue("p")
+	if len(path_to_clear) == 0{
+		write(c,"Invalid parameter")
+		return
+	}
+
+	// prevent canonical path
+	if strings.HasPrefix(path_to_clear,"."){
+		write(c,"Bad path")
+		return
+	}
+	if path_to_clear[0] == '/'{
+		path_to_clear = path_to_clear[1:]
+	}
+	path_to_clear = "./data/" + path_to_clear
+	
+	f, err := os.Open(path_to_clear,os.O_RDONLY,0)
+	if err != nil{
+		anlog.Error("File open error %s\n", err.String())
+		write(c,"Invalid request")
+		return
+	}
+	defer f.Close()
+	
+	st, err := f.Stat()
+	if err != nil{
+		anlog.Error("Cannot stat file. error %s\n", err.String())
+		write(c,"Invalid request")
+		return
+	}
+	if !st.IsDirectory(){
+		write(c,"Invalid path")
+		return
+	}
+	
+	err = os.RemoveAll(path_to_clear)
+	if err!=nil{
+		write(c,"Cannot clear path. e: %s", err.String())
+		return
+	}
+	
+	if path_to_clear == store_dir + "/"{
+		if err := os.Mkdir(store_dir,0775); err != nil{
+			anlog.Error("Cannot recreate base store_dir: `%s`\n", store_dir)
+		}
+	}
+	
+	anlog.Info("Path cleared by request from `%s`: `%s`\n", r.Host, path_to_clear)
+	write(c,"Clear successfully")
+}
+
 func intro(){
 	fmt.Println("\n AnsCDN " + VERSION + " - a Simple CDN Server")
 	fmt.Println(" Copyright (C) 2010 Robin Syihab (r@nosql.asia)")
@@ -287,6 +353,7 @@ func main() {
 	flag.BoolVar(&cache_only,"cache-only",false,"Don't serve cached file.")
 	flag.BoolVar(&file_mon,"file-mon",true,"Enable file cache monitor.")
 	flag.Int64Var(&cache_expires,"cx",1296000,"File deleted automatically after seconds time not accessed.\nWork only if `file-mon` enabled")
+	flag.StringVar(&clear_cache_path,"ccp","","Clear cache root path.")
 	
 	flag.Parse()
 	
@@ -315,6 +382,13 @@ func main() {
 	
 	anlog.Info("Serving on 0.0.0.0:" + serving_port + "... ready.\n" )
 	
+	if len(clear_cache_path) > 0 {
+		if clear_cache_path[0] != '/'{
+			anlog.Error("Invalid ccp `%s`. missing `/`\n",clear_cache_path)
+			os.Exit(2)
+		}
+		http.Handle(clear_cache_path, http.HandlerFunc(ClearCacheHandler))
+	}
 	http.Handle("/", http.HandlerFunc(MainHandler))
 	http.ListenAndServe("0.0.0.0:" + serving_port, nil)
 }
