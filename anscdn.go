@@ -152,7 +152,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 		r, _, err := http.Get(url_source)
 		if err != nil {
-			anlog.Error("Cannot download data form `%s`\n", url_source)
+			anlog.Error("Cannot download data from `%s`. e: %s\n", url_source, err.String())
 			fmt.Fprintf(con,"404 Not found (e)")
 			return
 		}
