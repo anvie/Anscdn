@@ -1,0 +1,23 @@
+CC=$(GOBIN)/8g
+LD=$(GOBIN)/8l 
+
+OBJS =\
+	anlog.8 \
+	configfile.8 \
+	filemon.8 \
+	config.8 \
+	anscdn.8
+
+all: anscdn
+
+anscdn: $(OBJS)
+	$(LD) -o $@ anscdn.8
+
+%.8 : %.go 
+	$(CC) $< 
+
+% : %.8 
+	$(LD) -L . -o $@ $^ 
+
+clean:
+	rm *.8
