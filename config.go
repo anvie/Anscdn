@@ -5,7 +5,7 @@ package config
 
 import (
 	"os"
-	"configfile"
+	"./configfile"
 )
 
 type AnscdnConf struct {
