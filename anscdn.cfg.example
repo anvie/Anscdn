@@ -1,0 +1,12 @@
+[default]
+base_server = ansvia.com:2194
+serving_port = 2009
+store_dir = ./data
+strict = true
+cache_only = false
+file_mon = false
+cache_expires = 1296000
+clear_cache_path = /clearDataDir
+ignore_no_ext = true
+ignore_ext = html,txt
+
