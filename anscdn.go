@@ -15,6 +15,7 @@ package main;
 import (
 	"io/ioutil"
 	"strings"
+	"strconv"
 	"fmt"
 	"http"
 	"os"
@@ -24,20 +25,15 @@ import (
 	"flag"
 	"./anlog"
 	"./filemon"
+	"./config"
 )
 
 const (
-	VERSION = "0.3 beta"
+	VERSION = "0.4 beta"
 )
 
-var base_server string
-var serving_port string
-var store_dir string
-var strict bool
-var cache_only bool
-var file_mon bool
-var cache_expires int64
-var clear_cache_path string
+var cfg *config.AnscdnConf
+var quiet bool
 
 func file_exists(file_path string) bool{
 	file, err := os.Open(file_path, os.O_RDONLY, 0)
@@ -105,24 +101,45 @@ func MainHandler(con *http.Conn, r *http.Request){
 		return
 	}
 	
+	// restrict no ext
+	if cfg.IgnoreNoExt && len(path.Ext(url_path)) == 0 {
+		anlog.Warn("Ignoring `%s`\n", url_path)
+		http.Error(con, "404", http.StatusNotFound)
+		return
+	}
+	
+	// restrict ext
+	if len(cfg.IgnoreExt) > 0 {
+		cext := path.Ext(url_path)
+		if len(cext) > 1{
+			cext = strings.ToLower(cext[1:])
+			exts := strings.Split(cfg.IgnoreExt,",",0)
+			for _, ext := range exts{
+				if cext == strings.Trim(ext," ") {
+					anlog.Warn("Ignoring `%s` by extension.\n", url_path)
+					http.Error(con, "404", http.StatusNotFound)
+					return
+				}
+			}
+		}
+	}
+	
 	var abs_path string
 	
-	if strings.HasPrefix(store_dir,"./"){
+	if strings.HasPrefix(cfg.StoreDir,"./"){
 		
 		abs_path, _ = os.Getwd()
-		abs_path = path.Join(abs_path, store_dir[1:], url_path)
+		abs_path = path.Join(abs_path, cfg.StoreDir[1:], url_path)
 		
 	}else{
-		abs_path = path.Join(store_dir,url_path)
+		abs_path = path.Join(cfg.StoreDir,url_path)
 	}
 	
 	dir_name, _ := path.Split(abs_path)
 	
 	if !file_exists(abs_path) {
 		
-		url_source := base_server + "/" + url_path
-		
-		anlog.Info("File `%s` first cached from `%s`.\n", abs_path, url_source)
+		url_source := "http://" + cfg.BaseServer + "/" + url_path
 		
 		err := os.MkdirAll(dir_name,0755)
 		if err != nil {
@@ -168,12 +185,14 @@ func MainHandler(con *http.Conn, r *http.Request){
 			
 			if ext_type != ctype {
 				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, ext_type, url_path )
-				if strict {
+				if cfg.Strict {
 					http.Error(con, "404", http.StatusNotFound)
 					return
 				}
 			}
 		}
+		
+		anlog.Info("File `%s` first cached from `%s`.\n", abs_path, url_source)
 		
 		file, err := os.Open(abs_path,os.O_WRONLY | os.O_CREAT,0755)
 		if err != nil {
@@ -220,7 +239,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 		
 	}else{
 		
-		if cache_only {
+		if cfg.CacheOnly {
 			// no static serving, use external server like nginx etc.
 			return
 		}
@@ -323,6 +342,8 @@ func ClearCacheHandler(c *http.Conn, r *http.Request){
 		return
 	}
 	
+	store_dir := cfg.StoreDir
+	
 	if path_to_clear == store_dir + "/"{
 		if err := os.Mkdir(store_dir,0775); err != nil{
 			anlog.Error("Cannot recreate base store_dir: `%s`\n", store_dir)
@@ -344,52 +365,82 @@ func main() {
 	
 	intro()
 	
-	var bs string
+	var cfg_file string
 	
-	flag.StringVar(&bs,"base-server","","Base server address ex: 127.0.0.1:2194.")
-	flag.StringVar(&serving_port,"port","2194","Serving port.")
-	flag.StringVar(&store_dir,"store-dir","./data","Location path to store cached data.")
-	flag.BoolVar(&strict,"strict",true,"Strict mode. Don't cache invalid mime type.")
-	flag.BoolVar(&cache_only,"cache-only",false,"Don't serve cached file.")
-	flag.BoolVar(&file_mon,"file-mon",true,"Enable file cache monitor.")
-	flag.Int64Var(&cache_expires,"cx",1296000,"File deleted automatically after seconds time not accessed.\nWork only if `file-mon` enabled")
-	flag.StringVar(&clear_cache_path,"ccp","","Clear cache root path.")
+	flag.StringVar(&cfg_file,"config","anscdn.cfg","Config file.")
+	flag.BoolVar(&quiet,"quiet",false,"Quiet.")
 	
 	flag.Parse()
 	
-	if bs == "" {
-		fmt.Println("Invalid parameter.\n")
+	anlog.Quiet = quiet
+	
+	var err os.Error
+	cfg, err = config.Parse("anscdn.cfg")
+	
+	if err != nil {
+		fmt.Println("Invalid configuration. e: ",err.String(),"\n")
 		os.Exit(1)
 	}
 	
-	base_server = "http://" + bs
+	if len(cfg.BaseServer) == 0{
+		anlog.Error("No base server")
+		os.Exit(3)
+	}
+	if cfg.ServingPort == 0{
+		anlog.Error("No port")
+		os.Exit(4)
+	}
+	if len(cfg.StoreDir) == 0{
+		cfg.StoreDir = "./data"
+	}
+	if cfg.CacheExpires == 0{
+		cfg.CacheExpires = 1296000
+	}
 	
-	fmt.Println("Base server: " + bs)
-	if strict {
+	fmt.Println("Configuration:")
+	fmt.Println("---------------------------------------")
+	
+	fmt.Println("Base server: " + cfg.BaseServer)
+	if cfg.Strict == true {
 		fmt.Println("Strict mode ON")
 	}else{
 		fmt.Println("Strict mode OFF")
 	}
-	if cache_only{
+	if cfg.CacheOnly == true {
 		fmt.Println("Cache only")
 	}
-	if file_mon{
-		fmt.Println("File monitor enabled")
-		go filemon.StartFileMon(store_dir, cache_expires)
+	if cfg.IgnoreNoExt==true{fmt.Println("Ignore no extension files");}
+	if len(cfg.IgnoreExt)>0{fmt.Println("Ignore extension for", cfg.IgnoreExt);}
+	if len(cfg.ClearCachePath) > 0{
+		fmt.Println("Clear cache path: ", cfg.ClearCachePath)
 	}
 	
-	fmt.Printf("Store cached data in `%s`\n", store_dir)
+	fmt.Printf("Store cached data in `%s`\n", cfg.StoreDir)
 	
-	anlog.Info("Serving on 0.0.0.0:" + serving_port + "... ready.\n" )
+	if cfg.FileMon == true {
+		fmt.Println("File monitor enabled")
+		if err != nil{
+			anlog.Error("Invalid cache_expires value `%d`\n", cfg.CacheExpires)
+			os.Exit(5)
+		}
+		go filemon.StartFileMon(cfg.StoreDir, cfg.CacheExpires)
+	}
 	
-	if len(clear_cache_path) > 0 {
-		if clear_cache_path[0] != '/'{
-			anlog.Error("Invalid ccp `%s`. missing `/`\n",clear_cache_path)
+	fmt.Println("---------------------------------------\n")
+	
+	anlog.Info("Serving on 0.0.0.0:%d... ready.\n", cfg.ServingPort )
+	
+	
+	if len(cfg.ClearCachePath) > 0 {
+		if cfg.ClearCachePath[0] != '/'{
+			anlog.Error("Invalid ccp `%s`. missing `/`\n",cfg.ClearCachePath)
 			os.Exit(2)
 		}
-		http.Handle(clear_cache_path, http.HandlerFunc(ClearCacheHandler))
+		http.Handle(cfg.ClearCachePath, http.HandlerFunc(ClearCacheHandler))
 	}
 	http.Handle("/", http.HandlerFunc(MainHandler))
-	http.ListenAndServe("0.0.0.0:" + serving_port, nil)
+	if err := http.ListenAndServe("0.0.0.0:" + strconv.Itoa(cfg.ServingPort), nil); err != nil {
+		anlog.Error("%s\n",err.String())
+	}
 }
 

@@ -77,7 +77,10 @@ func processDir(p string){
 		}
 		pp := path.Join(p,f)
 		//fmt.Println(pp)
-		o, _ := os.Open(pp,os.O_RDONLY,0)
+		o, err := os.Open(pp,os.O_RDONLY,0)
+		if err != nil {
+			continue
+		}
 		defer o.Close()
 		if st,_:=o.Stat(); st != nil{
 			if st.IsDirectory(){
