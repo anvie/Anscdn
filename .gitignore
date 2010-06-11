@@ -1,5 +1,10 @@
-
+.DS_Store
+anscdn.cfg
+archive/
+data/
+filemon
 anscdn
 anscdn.6
 .gitignore
-
+*~
+*#
