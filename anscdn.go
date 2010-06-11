@@ -94,6 +94,11 @@ func MainHandler(con *http.Conn, r *http.Request){
 	
 	url_path := r.URL.Path[1:]
 	
+	if len(url_path) == 0{
+		http.Error(con,"404",http.StatusNotFound)
+		return
+	}
+	
 	// security check
 	if !validUrlPath(url_path){
 		write(con,"Invalid url path")
