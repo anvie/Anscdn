@@ -4,7 +4,7 @@ archive/
 data/
 filemon
 anscdn
-anscdn.6
+*.6
 .gitignore
 *~
 *#
