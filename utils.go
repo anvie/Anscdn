@@ -3,11 +3,11 @@ package utils
 
 
 var FixedMimeList = map[string]string{
-	"js" : "application/javascript",
+	"js" : "application/x-javascript",
 }
 
 var VariantMimeList = map[string]string{
-	"application/x-javascript" : FixedMimeList["js"],
+	"application/javascript" : FixedMimeList["js"],
 }
 
 
