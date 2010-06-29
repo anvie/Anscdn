@@ -26,10 +26,11 @@ import (
 	"./anlog"
 	"./filemon"
 	"./config"
+	"./utils"
 )
 
 const (
-	VERSION = "0.4 beta"
+	VERSION = "0.5 beta"
 )
 
 var cfg *config.AnscdnConf
@@ -188,7 +189,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 				ext_type = ext_type[0:]
 			}
 			
-			if ext_type != ctype {
+			if ext_type != utils.FixedMime(ctype) {
 				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, ext_type, url_path )
 				if cfg.Strict {
 					http.Error(con, "404", http.StatusNotFound)
