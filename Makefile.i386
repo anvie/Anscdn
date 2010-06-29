@@ -6,6 +6,7 @@ OBJS =\
 	configfile.8 \
 	filemon.8 \
 	config.8 \
+	utils.8 \
 	anscdn.8
 
 all: anscdn
