@@ -17,4 +17,3 @@ func FixedMime(mimeType string) string {
 	}
 	return mimeType
 }
-

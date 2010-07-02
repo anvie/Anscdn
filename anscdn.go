@@ -188,9 +188,10 @@ func MainHandler(con *http.Conn, r *http.Request){
 			}else{
 				ext_type = ext_type[0:]
 			}
-			
-			if ext_type != utils.FixedMime(ctype) {
-				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, ext_type, url_path )
+			ctype := utils.FixedMime(ctype)
+			exttype := utils.FixedMime(ext_type)
+			if exttype != ctype {
+				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, exttype, url_path )
 				if cfg.Strict {
 					http.Error(con, "404", http.StatusNotFound)
 					return
