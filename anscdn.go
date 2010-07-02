@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	VERSION = "0.5 beta"
+	VERSION = "0.6 beta"
 )
 
 var cfg *config.AnscdnConf
@@ -381,7 +381,7 @@ func main() {
 	anlog.Quiet = quiet
 	
 	var err os.Error
-	cfg, err = config.Parse("anscdn.cfg")
+	cfg, err = config.Parse(cfg_file)
 	
 	if err != nil {
 		fmt.Println("Invalid configuration. e: ",err.String(),"\n")
