@@ -1,4 +1,11 @@
-
+/**
+*
+* 	AnsCDN Copyright (C) 2010 Robin Syihab (r@nosql.asia)
+*	Simple CDN server written in Golang.
+*
+*	License: General Public License v2 (GPLv2)
+*
+**/
 
 package filemon
 

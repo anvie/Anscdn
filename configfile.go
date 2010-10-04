@@ -48,11 +48,11 @@ package configfile
 
 
 import (
-	"bufio";
-	"os";
-	"regexp";
-	"strconv";
-	"strings";
+	"bufio"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 
@@ -301,7 +301,7 @@ func (c *ConfigFile) write(buf *bufio.Writer, header string) (err os.Error) {
 // WriteConfigFile saves the configuration representation to a file.
 // The desired file permissions must be passed as in os.Open.
 // The header is a string that is saved as a comment in the first line of the file.
-func (c *ConfigFile) WriteConfigFile(fname string, perm int, header string) (err os.Error) {
+func (c *ConfigFile) WriteConfigFile(fname string, perm uint32, header string) (err os.Error) {
 	var file *os.File;
 
 	if file, err = os.Open(fname, os.O_WRONLY|os.O_CREAT|os.O_TRUNC, perm); err != nil {
@@ -416,7 +416,7 @@ func (c *ConfigFile) GetString(section string, option string) (value string, err
 	var i int;
 
 	for i = 0; i < DepthValues; i++ {	// keep a sane depth
-		vr := varRegExp.ExecuteString(value);
+		vr := varRegExp.FindString(value);
 		if len(vr) == 0 {
 			break
 		}

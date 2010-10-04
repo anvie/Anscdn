@@ -4,7 +4,6 @@
 *	Simple CDN server written in Golang.
 *
 *	License: General Public License v2 (GPLv2)
-*	version 0.1 alpha
 *
 **/
 
@@ -30,7 +29,7 @@ import (
 )
 
 const (
-	VERSION = "0.6 beta"
+	VERSION = "0.7 beta"
 )
 
 var cfg *config.AnscdnConf
@@ -71,7 +70,7 @@ func isText(b []byte) bool {
     return true
 }
 
-func setHeaderCond(con *http.Conn, abs_path string, data []byte) {
+func setHeaderCond(con http.ResponseWriter, abs_path string, data []byte) {
 	extension := path.Ext(abs_path)
 	if ctype := mime.TypeByExtension(extension); ctype != "" {
 		con.SetHeader("Content-Type", ctype)
@@ -82,16 +81,15 @@ func setHeaderCond(con *http.Conn, abs_path string, data []byte) {
             con.SetHeader("Content-Type", "application/octet-stream") // generic binary
         }
 	}
-	
 }
 
 func validUrlPath(url_path string) bool{
 	return strings.Index(url_path,"../") < 1
 }
 
-func write(c *http.Conn, f string, v ...interface{}){fmt.Fprintf(c,f,v);}
+func write(c http.ResponseWriter, f string, v ...interface{}){fmt.Fprintf(c,f,v...);}
 
-func MainHandler(con *http.Conn, r *http.Request){
+func MainHandler(con http.ResponseWriter, r *http.Request){
 	
 	url_path := r.URL.Path[1:]
 	
@@ -306,7 +304,7 @@ func MainHandler(con *http.Conn, r *http.Request){
 	
 }
 
-func ClearCacheHandler(c *http.Conn, r *http.Request){
+func ClearCacheHandler(c http.ResponseWriter, r *http.Request){
 
 	path_to_clear := r.FormValue("p")
 	if len(path_to_clear) == 0{
