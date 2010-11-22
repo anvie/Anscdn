@@ -9,4 +9,4 @@ cache_expires = 1296000
 clear_cache_path = /clearDataDir
 ignore_no_ext = true
 ignore_ext = html,txt
-
+provide_api = false

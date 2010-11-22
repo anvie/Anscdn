@@ -12,7 +12,6 @@ package main;
 
 
 import (
-	"io/ioutil"
 	"strings"
 	"strconv"
 	"fmt"
@@ -25,11 +24,12 @@ import (
 	"./anlog"
 	"./filemon"
 	"./config"
-	"./utils"
+	"./cdnize"
+	"./downloader"
 )
 
 const (
-	VERSION = "0.7 beta"
+	VERSION = "0.8 beta"
 )
 
 var cfg *config.AnscdnConf
@@ -153,89 +153,24 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		}
 		
 		// download it
-		
-		r, _, err := http.Get(url_source)
-		if err != nil {
-			anlog.Error("Cannot download data from `%s`. e: %s\n", url_source, err.String())
-			fmt.Fprintf(con,"404 Not found (e)")
-			return
-		}
-		
 		var data []byte
-		data, err = ioutil.ReadAll(r.Body)
-		
-		if err != nil {
-			fmt.Fprintf(con,"404 Not found (e)")
-			anlog.Error("Cannot read url source body `%s`. error: %s\n", abs_path,err.String())
+		rv, lm, total_size := downloader.Download(url_source, abs_path, cfg.Strict, &data)
+		if rv == false{
+			fmt.Fprintf(con, "404 Not found")
 			return
 		}
-		
-		// check for the mime
-		ctype := r.Header["Content-Type"]
-		if endi := strings.IndexAny(ctype,";"); endi > 1 {
-			ctype = ctype[0:endi]
-		}else{
-			ctype = ctype[0:]
-		}
-		
-		// fmt.Printf("Content-type: %s\n",ctype)
-		if ext_type := mime.TypeByExtension(path.Ext(abs_path)); ext_type != "" {
-			
-			if endi := strings.IndexAny(ext_type,";"); endi > 1 {
-				ext_type = ext_type[0:endi]
-			}else{
-				ext_type = ext_type[0:]
-			}
-			ctype := utils.FixedMime(ctype)
-			exttype := utils.FixedMime(ext_type)
-			if exttype != ctype {
-				anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, exttype, url_path )
-				if cfg.Strict {
-					http.Error(con, "404", http.StatusNotFound)
-					return
-				}
-			}
-		}
-		
-		anlog.Info("File `%s` first cached from `%s`.\n", abs_path, url_source)
-		
-		file, err := os.Open(abs_path,os.O_WRONLY | os.O_CREAT,0755)
-		if err != nil {
-			fmt.Fprintf(con,"404 Not found (e)")
-			anlog.Error("Cannot create file `%s`. error: %s\n", abs_path,err.String())
-			return
-		}
-		defer file.Close()
-		
-		var total_size int = len(data)
-		for {
-			bw, err := file.Write(data)
-			if err != nil {
-				fmt.Fprintf(con,"404 Not found (e)")
-				anlog.Error("Cannot write %d bytes data in file `%s`. error: %s\n", total_size, abs_path,err.String())
-				//file.Close()
-				return
-			}
-			if bw >= total_size {
-				break
-			}
-		}
-		
-		//file.Close()
-		
+	
 		// send to client for the first time.
 		setHeaderCond(con, abs_path, data)
 		
 		// set Last-modified header
-		lm,_ := filemon.GetLastModif(file)
+		
 		con.SetHeader("Last-Modified", lm)
 		
 		for {
 			bw, err := con.Write(data)
-			if err != nil {
-				fmt.Fprintf(con,"404 Not found (e)")
-				anlog.Error("Cannot send file `%s`. error: %s\n", abs_path, err.String())
-				return
+			if err != nil || bw == 0 {
+				break
 			}
 			if bw >= total_size {
 				break
@@ -442,6 +377,9 @@ func main() {
 			os.Exit(2)
 		}
 		http.Handle(cfg.ClearCachePath, http.HandlerFunc(ClearCacheHandler))
+	}
+	if cfg.ProvideApi == true {
+		http.Handle("/api/cdnize", http.HandlerFunc(cdnize.Handler))
 	}
 	http.Handle("/", http.HandlerFunc(MainHandler))
 	if err := http.ListenAndServe("0.0.0.0:" + strconv.Itoa(cfg.ServingPort), nil); err != nil {

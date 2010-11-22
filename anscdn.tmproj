@@ -3,64 +3,70 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>configfile.go</string>
+	<string>config.go</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
 			<string>anscdn.go</string>
 			<key>lastUsed</key>
-			<date>2010-08-10T21:36:17Z</date>
+			<date>2010-11-22T20:30:18Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anlog.go</string>
 			<key>lastUsed</key>
-			<date>2010-08-10T21:36:30Z</date>
+			<date>2010-11-22T19:58:50Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>config.go</string>
 			<key>lastUsed</key>
-			<date>2010-08-10T21:36:34Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>configfile.go</string>
-			<key>lastUsed</key>
-			<date>2010-08-10T21:36:34Z</date>
+			<date>2010-11-22T20:32:58Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
+			<string>configfile.go</string>
+			<key>lastUsed</key>
+			<date>2010-11-22T20:27:59Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>filemon.go</string>
 			<key>lastUsed</key>
-			<date>2010-08-10T21:36:22Z</date>
+			<date>2010-10-04T18:23:16Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Makefile</string>
 			<key>lastUsed</key>
-			<date>2010-06-29T00:11:34Z</date>
+			<date>2010-11-22T19:58:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Makefile.i386</string>
 			<key>lastUsed</key>
-			<date>2010-07-02T16:19:32Z</date>
+			<date>2010-10-04T18:23:53Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>README.md</string>
+			<key>lastUsed</key>
+			<date>2010-11-22T19:58:48Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anscdn.cfg.example</string>
 			<key>lastUsed</key>
-			<date>2010-06-28T23:17:42Z</date>
+			<date>2010-11-22T20:32:58Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>utils.go</string>
 			<key>lastUsed</key>
-			<date>2010-08-10T21:36:25Z</date>
+			<date>2010-10-04T18:23:48Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -81,14 +87,14 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>Makefile.i386</key>
+		<key>README.md</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>10</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>8</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -100,9 +106,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>5</integer>
+				<integer>92</integer>
 				<key>line</key>
-				<integer>14</integer>
+				<integer>25</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -114,28 +120,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>2</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>444</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>302</integer>
+			<integer>362</integer>
 		</dict>
 		<key>config.go</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>4</integer>
+				<integer>108</integer>
 				<key>line</key>
-				<integer>7</integer>
+				<integer>52</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>6</integer>
+			<integer>17</integer>
 		</dict>
 		<key>configfile.go</key>
 		<dict>
@@ -144,35 +150,7 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>150</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>126</integer>
-		</dict>
-		<key>filemon.go</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>11</integer>
-				<key>line</key>
-				<integer>81</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>17</integer>
-		</dict>
-		<key>utils.go</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>19</integer>
+				<integer>5</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -182,18 +160,16 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
+		<string>README.md</string>
 		<string>Makefile</string>
 		<string>anlog.go</string>
 		<string>anscdn.go</string>
-		<string>filemon.go</string>
-		<string>configfile.go</string>
 		<string>config.go</string>
-		<string>utils.go</string>
-		<string>Makefile.i386</string>
+		<string>configfile.go</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{203, 4}, {1057, 774}}</string>
+	<string>{{203, 44}, {1057, 734}}</string>
 </dict>
 </plist>

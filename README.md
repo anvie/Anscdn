@@ -7,7 +7,7 @@ AnsCDN is experimental project for implementing CDN server to be lightweight and
 COMPILATION
 ------------------
 
-Require Golang >= version 6448+
+Require Golang >= 6448+
 
 Just type
 
