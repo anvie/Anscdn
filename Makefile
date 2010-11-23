@@ -7,8 +7,8 @@ OBJS =\
 	filemon.6 \
 	config.6 \
 	utils.6 \
-	cdnize.6 \
 	downloader.6 \
+	cdnize.6 \
 	anscdn.6
 
 all: anscdn

@@ -316,6 +316,7 @@ func main() {
 	
 	var err os.Error
 	cfg, err = config.Parse(cfg_file)
+	cdnize.Cfg = cfg
 	
 	if err != nil {
 		fmt.Println("Invalid configuration. e: ",err.String(),"\n")
@@ -380,6 +381,8 @@ func main() {
 	}
 	if cfg.ProvideApi == true {
 		http.Handle("/api/cdnize", http.HandlerFunc(cdnize.Handler))
+		//anlog.Info(fmt.Sprintf("/%s/", cfg.StoreDir[2:]))
+		http.Handle(fmt.Sprintf("/%s/", cfg.StoreDir[2:]), http.HandlerFunc(cdnize.StaticHandler))
 	}
 	http.Handle("/", http.HandlerFunc(MainHandler))
 	if err := http.ListenAndServe("0.0.0.0:" + strconv.Itoa(cfg.ServingPort), nil); err != nil {

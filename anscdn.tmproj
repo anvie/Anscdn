@@ -3,28 +3,40 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>config.go</string>
+	<string>anscdn.go</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
+			<string>cdnize.go</string>
+			<key>lastUsed</key>
+			<date>2010-11-22T22:45:09Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>downloader.go</string>
+			<key>lastUsed</key>
+			<date>2010-11-22T21:56:40Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>anscdn.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T20:30:18Z</date>
+			<date>2010-11-22T22:45:09Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anlog.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T19:58:50Z</date>
+			<date>2010-11-22T21:04:35Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>config.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T20:32:58Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-11-22T21:38:11Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -42,7 +54,7 @@
 			<key>filename</key>
 			<string>Makefile</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T19:58:43Z</date>
+			<date>2010-11-22T21:01:31Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -54,13 +66,13 @@
 			<key>filename</key>
 			<string>README.md</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T19:58:48Z</date>
+			<date>2010-11-22T20:38:52Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anscdn.cfg.example</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T20:32:58Z</date>
+			<date>2010-11-22T21:18:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -78,9 +90,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>10</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>8</integer>
+				<integer>10</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -115,33 +127,61 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>anscdn.cfg.example</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
+				<key>line</key>
+				<integer>11</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>anscdn.go</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>444</integer>
+				<integer>31</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>362</integer>
+			<integer>0</integer>
+		</dict>
+		<key>cdnize.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>20</integer>
+				<key>line</key>
+				<integer>30</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>config.go</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>108</integer>
+				<integer>115</integer>
 				<key>line</key>
-				<integer>52</integer>
+				<integer>54</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>17</integer>
+			<integer>19</integer>
 		</dict>
 		<key>configfile.go</key>
 		<dict>
@@ -157,6 +197,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>downloader.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>13</integer>
+				<key>line</key>
+				<integer>16</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
@@ -164,6 +218,9 @@
 		<string>Makefile</string>
 		<string>anlog.go</string>
 		<string>anscdn.go</string>
+		<string>downloader.go</string>
+		<string>anscdn.cfg.example</string>
+		<string>cdnize.go</string>
 		<string>config.go</string>
 		<string>configfile.go</string>
 	</array>
