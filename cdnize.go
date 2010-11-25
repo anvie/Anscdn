@@ -35,9 +35,16 @@ func write(c http.ResponseWriter, f string, v ...interface{}){fmt.Fprintf(c,f,v.
 
 func Handler(c http.ResponseWriter, r *http.Request){
 
+	api_key := r.FormValue("api_key")
+	
+	if api_key != Cfg.ApiKey{
+		write(c,"{'status': 'invalid Api key'}")
+		return
+	}
+	
 	requested_url := r.FormValue("u")
 	if requested_url == ""{
-		write(c,"{status: 'failed'}")
+		write(c,"{'status': 'failed'}")
 		return
 	}
 	//write(c, fmt.Sprintf("{status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
@@ -74,12 +81,12 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	new_path := path.Join(dir, file_name)
 	
 	if err := syscall.Rename(abs_path, new_path); err != 0{
-		anlog.Error("Cannet rename from file `%s` to `%s`", abs_path, new_path)
+		anlog.Error("Cannot rename from file `%s` to `%s`", abs_path, new_path)
 		write(c,"{status: 'failed'}")
 		return
 	}
 	
-	cdnized_url := "http://static1.digaku.com/" + path.Join(Cfg.StoreDir[2:], file_name)
+	cdnized_url := fmt.Sprintf("http://%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], file_name)
 	
 	anlog.Info("cdnized_url: %s", cdnized_url)
 	

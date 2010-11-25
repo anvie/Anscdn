@@ -1,5 +1,5 @@
 [default]
-base_server = ansvia.com:2194
+base_server = example.com
 serving_port = 2009
 store_dir = ./data
 strict = true
@@ -11,5 +11,5 @@ ignore_no_ext = true
 ignore_ext = html,txt
 provide_api = false
 api_key = 12345
-cdn_servers = static1.ansvia.com
+cdn_server_name = static4.example.com
 
