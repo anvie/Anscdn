@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>config.go</string>
+	<string>anscdn.cfg.example</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -34,9 +34,7 @@
 			<key>filename</key>
 			<string>config.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-23T17:54:00Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-11-23T20:00:28Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -72,7 +70,9 @@
 			<key>filename</key>
 			<string>anscdn.cfg.example</string>
 			<key>lastUsed</key>
-			<date>2010-11-23T17:03:52Z</date>
+			<date>2010-11-23T20:00:28Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -126,6 +126,36 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>anscdn.cfg.example</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>12</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>12</integer>
+			</dict>
 		</dict>
 		<key>anscdn.go</key>
 		<dict>
@@ -221,6 +251,7 @@
 		<string>downloader.go</string>
 		<string>cdnize.go</string>
 		<string>config.go</string>
+		<string>anscdn.cfg.example</string>
 		<string>filemon.go</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
