@@ -44,9 +44,32 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	
 	requested_url := r.FormValue("u")
 	if requested_url == ""{
-		write(c,"{'status': 'failed'}")
+		
+		file, err := r.MultipartReader()
+		if err != nil{
+			write(c,"{'status': 'failed','info': 'cannot get multipart reader'}")
+			return	
+		}
+		var data [1000]byte
+		part, err := file.NextPart()
+		if err != nil{
+			write(c,"{'status': 'failed, no `u` nor `file`'}")
+			return
+		}
+		var i uint64 = 0
+		for i < r.ContentLength{
+			i, err := part.Read(data[0:])
+			if err !=nil{
+				write(c,"{'status': 'failed', 'info': 'cannot read next part'}")
+				return
+			}
+		}
+		fmt.Printf("content-length: %v, file: %v, file-length: %v, i: %v\n", r.ContentLength, string(data[0:]), i, i)
+		
+		write(c,"{'status': 'failed, no `u` nor `file`'}")
 		return
 	}
+	
 	//write(c, fmt.Sprintf("{status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
 	
 	file_ext := path.Ext(requested_url)
