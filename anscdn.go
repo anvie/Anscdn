@@ -104,8 +104,8 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		anlog.Warn("Invalid url_path: %s\n",url_path)
 		return
 	}
-	
-	if strings.HasPrefix(url_path,cfg.UrlMap) == true{
+
+	if len(cfg.UrlMap) > 1 && strings.HasPrefix(url_path,cfg.UrlMap[1:]) == true{
 		url_path = url_path[len(cfg.UrlMap):]
 	}
 	
