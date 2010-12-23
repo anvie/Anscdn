@@ -11,6 +11,7 @@ import (
 	"crypto/hmac"
 	"os"
 	"syscall"
+	"json"
 	"./anlog"
 	"./config"
 	"./downloader"
@@ -33,6 +34,18 @@ func RandStrings(N int) string {
 
 func write(c http.ResponseWriter, f string, v ...interface{}){fmt.Fprintf(c,f,v...);}
 
+func Jsonize(data interface{}) string{
+	rv, err := json.Marshal(&data)
+	if err != nil{
+		anlog.Error("Cannot jsonize `%v`\n", data)
+		return ""
+	}
+	return string(rv)
+}
+
+func jsonError(status, info string) string{
+	return Jsonize(map[string]string{"status":status,"info":info})
+}
 
 func Handler(c http.ResponseWriter, r *http.Request){
 
@@ -41,7 +54,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	api_key := r.FormValue("api_key")
 	
 	if api_key != Cfg.ApiKey{
-		write(c,"{'status': 'invalid Api key'}")
+		write(c,jsonError("failed","Invalid api key"))
 		return
 	}
 	
@@ -52,7 +65,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		file_name := r.FormValue("file_name")
 
 		if file_name == ""{
-			write(c,"{'status': 'failed','info': 'no `file_name` parameter'}")
+			write(c,jsonError("failed","no `file_name` parameter"))
 			return
 		}
 		
@@ -60,13 +73,13 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		
 		file, err := r.MultipartReader()
 		if err != nil{
-			write(c,"{'status': 'failed','info': 'cannot get multipart reader'}")
+			write(c,jsonError("failed","cannot get multipart reader"))
 			return	
 		}
 
 		part, err := file.NextPart()
 		if err != nil{
-			write(c,"{'status': 'failed, no `u` nor `file`'}")
+			write(c,jsonError("failed","no `u` nor `file`"))
 			return
 		}
 		var data [1000]byte
@@ -77,7 +90,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		dst_file, err := os.Open(abs_path,os.O_WRONLY | os.O_CREAT,0755)
 		if err != nil {
 			anlog.Error("Cannot create file `%s`. error: %s\n", abs_path,err.String())
-			write(c,"{'status': 'failed, cannot create temporary data'}")
+			write(c,jsonError("failed",fmt.Sprintf("cannot create temporary data. %v\n",err)))
 			return
 		}
 
@@ -90,7 +103,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 			_, err := md5ed.Write(data[0:i])
 			if err != nil{
 				anlog.Error("Cannot calculate MD5 hash")
-				write(c,"{status: 'failed'}")
+				write(c,jsonError("failed","cannot calculate checksum"))
 				break
 			}
 			
@@ -115,14 +128,14 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		
 		if err != nil {
 			anlog.Error("Cannot getwd\n")
-			write(c, "{'status': 'failed'}")
+			write(c,jsonError("failed","internal error"))
 			return
 		}
 		
 		//fmt.Printf("abs_path: %v, new_path: %v\n", abs_path, new_path)
 		if err := syscall.Rename(abs_path, new_path); err != 0{
 			anlog.Error("Cannot move from file `%s` to `%s`. %v.\n", abs_path, new_path, err)
-			write(c,"{status: 'failed'}")
+			write(c,jsonError("failed","internal error"))
 			return
 		}
 		
@@ -131,8 +144,15 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		anlog.Info("cdnized_url: %s\n", cdnized_url)
 		
 		os.Remove(abs_path)
+		
+		
+		type success struct{
+			Status string
+			Size int64
+			Cdnized_url string
+		}
 
-		write(c, fmt.Sprintf("{'status': 'ok', 'size': '%v', 'cdnized_url': '%s'}", data_size, cdnized_url))
+		write(c, Jsonize(&success{"ok", data_size, cdnized_url}))
 		return
 	}
 	
