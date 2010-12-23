@@ -371,6 +371,24 @@ func main() {
 		go filemon.StartFileMon(cfg.StoreDir, cfg.CacheExpires)
 	}
 	
+	current_dir, err := os.Getwd()
+	if err != nil{
+		anlog.Error("Cannot get current_directory\n")
+		os.Exit(6)
+	}
+	anlog.Info("Current directory: %v\n", current_dir)
+	fi, err := os.Lstat(cfg.StoreDir)
+	if err != nil{
+		anlog.Error("Cannot Lstat dir `%s`. %s.\n", cfg.StoreDir, err)
+	}
+	if err != nil || fi.IsDirectory() == false{
+		err = os.Mkdir(cfg.StoreDir, 0755)
+		if err != nil{
+			anlog.Error("Cannot create dir `%s`. %s.\n", err)
+			os.Exit(8)
+		}
+	}
+	
 	fmt.Println("---------------------------------------\n")
 	
 	anlog.Info("Serving on 0.0.0.0:%d... ready.\n", cfg.ServingPort )
