@@ -371,18 +371,17 @@ func main() {
 		go filemon.StartFileMon(cfg.StoreDir, cfg.CacheExpires)
 	}
 	
-	current_dir, err := os.Getwd()
+	current_dir, _ := path.Split(os.Args[0])
+	os.Chdir(current_dir)
+	current_dir, err = os.Getwd()
 	if err != nil{
 		anlog.Error("Cannot get current_directory\n")
 		os.Exit(6)
 	}
 	anlog.Info("Current directory: %v\n", current_dir)
-	fi, err := os.Lstat(cfg.StoreDir)
-	if err != nil{
-		anlog.Error("Cannot Lstat dir `%s`. %s.\n", cfg.StoreDir, err)
-	}
+	fi, err := os.Lstat(current_dir + cfg.StoreDir[1:])
 	if err != nil || fi.IsDirectory() == false{
-		err = os.Mkdir(cfg.StoreDir, 0755)
+		err = os.Mkdir(current_dir + cfg.StoreDir[1:], 0755)
 		if err != nil{
 			anlog.Error("Cannot create dir `%s`. %s.\n", err)
 			os.Exit(8)
@@ -403,7 +402,16 @@ func main() {
 	}
 	if cfg.ProvideApi == true {
 		http.Handle("/api/cdnize", http.HandlerFunc(cdnize.Handler))
-		//anlog.Info(fmt.Sprintf("/%s/", cfg.StoreDir[2:]))
+		
+		fi, err := os.Lstat(current_dir + cfg.StoreDir[1:] + "/" + cfg.ApiStorePrefix)
+		if err != nil || fi.IsDirectory() == false{
+			err = os.Mkdir(current_dir + cfg.StoreDir[1:] + "/" + cfg.ApiStorePrefix, 0755)
+			if err != nil{
+				anlog.Error("Cannot create dir `%s`. %s.\n", err)
+				os.Exit(8)
+			}
+		}
+		
 		http.Handle(fmt.Sprintf("/%s/", cfg.StoreDir[2:]), http.HandlerFunc(cdnize.StaticHandler))
 	}
 	http.Handle("/", http.HandlerFunc(MainHandler))

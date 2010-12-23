@@ -36,6 +36,8 @@ func write(c http.ResponseWriter, f string, v ...interface{}){fmt.Fprintf(c,f,v.
 
 func Handler(c http.ResponseWriter, r *http.Request){
 
+	c.SetHeader("Content-Type", "application/json")
+	
 	api_key := r.FormValue("api_key")
 	
 	if api_key != Cfg.ApiKey{
@@ -82,7 +84,6 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		for data_size < r.ContentLength{
 			i, err = part.Read(data[0:999])
 			if err !=nil{
-				anlog.Error("Cannot read more part. %s.\n", err)
 				break
 			}
 			
@@ -103,14 +104,14 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		
 		dst_file.Close()
 		
-		fmt.Printf("content-length: %v, file: %v, file-length: %v, i: %v\n", r.ContentLength, string(data[0:]), i, i)
+		//fmt.Printf("content-length: %v, file: %v, file-length: %v, i: %v\n", r.ContentLength, string(data[0:]), i, i)
 		
 		hash := fmt.Sprintf("%x", md5ed.Sum())
 		file_ext := path.Ext(file_name)
-		file_name = hash + "_2194_" + RandStrings(100) + file_ext
+		file_name = hash + RandStrings(9) + file_ext
 		new_path, err := os.Getwd()
 		
-		new_path = path.Join(new_path, Cfg.StoreDir[2:], file_name)
+		new_path = path.Join(new_path, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, file_name)
 		
 		if err != nil {
 			anlog.Error("Cannot getwd\n")
@@ -125,13 +126,13 @@ func Handler(c http.ResponseWriter, r *http.Request){
 			return
 		}
 		
-		cdnized_url := fmt.Sprintf("http://%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], file_name)
+		cdnized_url := fmt.Sprintf("http://%s/%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, file_name)
 
-		anlog.Info("cdnized_url: %s", cdnized_url)
+		anlog.Info("cdnized_url: %s\n", cdnized_url)
 		
 		os.Remove(abs_path)
 
-		write(c, fmt.Sprintf("{'status': 'ok', 'size': '%v', 'original': '%s', 'cdnized_url': '%s'}", data_size, requested_url, cdnized_url))
+		write(c, fmt.Sprintf("{'status': 'ok', 'size': '%v', 'cdnized_url': '%s'}", data_size, cdnized_url))
 		return
 	}
 	

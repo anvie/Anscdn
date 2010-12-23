@@ -2,6 +2,7 @@
 base_server = example.com
 serving_port = 2009
 store_dir = ./data
+api_store_prefix = c
 strict = true
 cache_only = false
 file_mon = false

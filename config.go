@@ -19,6 +19,7 @@ type AnscdnConf struct {
 	BaseServer string
 	ServingPort int
 	StoreDir string
+	ApiStorePrefix string
 	Strict bool
 	CacheOnly bool
 	FileMon bool
@@ -54,7 +55,9 @@ func Parse(file string) (ac *AnscdnConf, err os.Error) {
 	ApiKey, err := conf.GetString("default","api_key")
 	CdnServerName, err := conf.GetString("default", "cdn_server_name")
 	UrlMap, err := conf.GetString("default", "url_map")
+	ApiStorePrefix, err := conf.GetString("default", "api_store_prefix")
 
 	return &AnscdnConf{BaseServer,
-		ServingPort,StoreDir,Strict,CacheOnly,FileMon,CacheExpires,ClearCachePath,IgnoreNoExt,IgnoreExt,ProvideApi,ApiKey,CdnServerName,UrlMap}, err
+		ServingPort, StoreDir, ApiStorePrefix, Strict,CacheOnly,FileMon,CacheExpires,
+		ClearCachePath,IgnoreNoExt,IgnoreExt, ProvideApi,ApiKey,CdnServerName,UrlMap}, err
 }
