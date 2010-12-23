@@ -10,6 +10,7 @@ clear_cache_path = /clearDataDir
 ignore_no_ext = true
 ignore_ext = html,txt
 provide_api = false
+url_map = /static
 api_key = 12345
 cdn_server_name = static4.example.com
 

@@ -29,6 +29,7 @@ type AnscdnConf struct {
 	ProvideApi bool
 	ApiKey string
 	CdnServerName string
+	UrlMap string
 }
 
 func Parse(file string) (ac *AnscdnConf, err os.Error) {
@@ -52,7 +53,8 @@ func Parse(file string) (ac *AnscdnConf, err os.Error) {
 	ProvideApi, err := conf.GetBool("default","provide_api")
 	ApiKey, err := conf.GetString("default","api_key")
 	CdnServerName, err := conf.GetString("default", "cdn_server_name")
+	UrlMap, err := conf.GetString("default", "url_map")
 
 	return &AnscdnConf{BaseServer,
-		ServingPort,StoreDir,Strict,CacheOnly,FileMon,CacheExpires,ClearCachePath,IgnoreNoExt,IgnoreExt,ProvideApi,ApiKey,CdnServerName}, err
+		ServingPort,StoreDir,Strict,CacheOnly,FileMon,CacheExpires,ClearCachePath,IgnoreNoExt,IgnoreExt,ProvideApi,ApiKey,CdnServerName,UrlMap}, err
 }

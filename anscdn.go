@@ -105,6 +105,10 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		return
 	}
 	
+	if strings.HasPrefix(url_path,cfg.UrlMap) == true{
+		url_path = url_path[len(cfg.UrlMap):]
+	}
+	
 	// restrict no ext
 	if cfg.IgnoreNoExt && len(path.Ext(url_path)) == 0 {
 		anlog.Warn("Ignoring `%s`\n", url_path)

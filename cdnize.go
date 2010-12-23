@@ -56,9 +56,9 @@ func Handler(c http.ResponseWriter, r *http.Request){
 			write(c,"{'status': 'failed, no `u` nor `file`'}")
 			return
 		}
-		var i uint64 = 0
-		for i < r.ContentLength{
-			i, err := part.Read(data[0:])
+		var i int = 0
+		for int64(i) < r.ContentLength{
+			i, err = part.Read(data[0:])
 			if err !=nil{
 				write(c,"{'status': 'failed', 'info': 'cannot read next part'}")
 				return
