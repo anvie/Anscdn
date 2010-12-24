@@ -1,4 +1,13 @@
-
+/**
+*
+* 	AnsCDN Copyright (C) 2010 Robin Syihab (r [at] nosql.asia)
+*	Simple CDN server written in Golang.
+*
+*	License: General Public License v2 (GPLv2)
+*
+*	Copyright (c) 2009 The Go Authors. All rights reserved.
+*
+**/
 
 package downloader
 
