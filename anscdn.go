@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	VERSION = "0.9 beta"
+	VERSION = "0.10 beta"
 )
 
 var cfg *config.AnscdnConf

@@ -162,14 +162,14 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	
 	file_ext := path.Ext(requested_url)
 	abs_path, _ := os.Getwd()
-	abs_path = path.Join(abs_path, Cfg.StoreDir[2:], RandStrings(64) + file_ext)
+	abs_path = path.Join(abs_path, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, RandStrings(64) + file_ext)
 	
 	fmt.Printf("abs_path: %s\n", abs_path)
 	
 	var data []byte;
 	rv, lm, tsize := downloader.Download(requested_url, abs_path, true, &data)
 	if rv != true{
-		write(c,"{status: 'failed'}")
+		write(c,jsonError("failed","Cannot fetch from source url"))
 		return
 	}
 	
@@ -178,7 +178,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		brw, err := md5ed.Write(data)
 		if err != nil{
 			anlog.Error("Cannot calculate MD5 hash")
-			write(c,"{status: 'failed'}")
+			write(c,jsonError("failed","Internal error"))
 			return
 		}
 		if brw >= tsize{
@@ -188,20 +188,28 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	
 	hash := fmt.Sprintf("%x", md5ed.Sum())
 	dir, _ := path.Split(abs_path)
-	file_name := hash + "_2194_" + RandStrings(8) + file_ext
+	file_name := hash + RandStrings(8) + file_ext
 	new_path := path.Join(dir, file_name)
 	
 	if err := syscall.Rename(abs_path, new_path); err != 0{
 		anlog.Error("Cannot rename from file `%s` to `%s`", abs_path, new_path)
-		write(c,"{status: 'failed'}")
+		write(c,jsonError("failed","Internal error"))
 		return
 	}
 	
-	cdnized_url := fmt.Sprintf("http://%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], file_name)
+	cdnized_url := fmt.Sprintf("http://%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, file_name)
 	
 	anlog.Info("cdnized_url: %s", cdnized_url)
 	
-	write(c, fmt.Sprintf("{status: 'ok', lm: '%s', size: '%v', original: '%s', cdnized_url: '%s'}", lm, tsize, requested_url, cdnized_url))
+	type success struct{
+		Status string
+		Lm string
+		Size int
+		Original string
+		Cdnized_url string
+	}
+	
+	write(c, Jsonize(&success{"ok", lm, tsize, requested_url, cdnized_url}))
 }
 
 func StaticHandler(c http.ResponseWriter, r *http.Request){
