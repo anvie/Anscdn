@@ -206,7 +206,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		return
 	}
 	
-	cdnized_url := fmt.Sprintf("http://%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, file_name)
+	cdnized_url := fmt.Sprintf("http://%s/%s/%s/%s", Cfg.CdnServerName, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, file_name)
 	
 	anlog.Info("cdnized_url: %s", cdnized_url)
 	

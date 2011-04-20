@@ -3,129 +3,215 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>cdnize.go</string>
+	<string>anscdn.go</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
 			<string>cdnize.go</string>
 			<key>lastUsed</key>
-			<date>2010-12-07T09:35:36Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-12-24T11:35:58Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>downloader.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T06:58:53Z</date>
+			<date>2010-12-24T15:05:51Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anscdn.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T06:58:53Z</date>
+			<date>2010-12-31T05:28:35Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anlog.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T06:58:53Z</date>
+			<date>2010-12-24T11:36:00Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>config.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T09:44:39Z</date>
+			<date>2010-12-24T11:36:04Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>configfile.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-22T20:27:59Z</date>
+			<date>2010-12-24T11:36:05Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>filemon.go</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T06:58:55Z</date>
+			<date>2010-12-24T11:36:11Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Makefile</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T06:58:54Z</date>
+			<date>2010-12-24T11:36:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Makefile.i386</string>
 			<key>lastUsed</key>
-			<date>2010-10-04T18:23:53Z</date>
+			<date>2010-12-24T11:36:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>README.md</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T06:58:54Z</date>
+			<date>2010-12-24T11:36:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>anscdn.cfg.example</string>
 			<key>lastUsed</key>
-			<date>2010-11-25T09:44:37Z</date>
+			<date>2010-12-24T11:36:15Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>utils.go</string>
 			<key>lastUsed</key>
-			<date>2010-10-04T18:23:48Z</date>
+			<date>2010-12-24T15:04:24Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>anscdn.cfg.example</key>
+		<key>Makefile</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>6</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>Makefile.i386</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>10</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>README.md</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>15</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>anlog.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>anscdn.cfg.example</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>4</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>16</integer>
+				<key>line</key>
+				<integer>4</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>4</integer>
+			</dict>
+		</dict>
+		<key>anscdn.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>1</integer>
+				<key>line</key>
+				<integer>94</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>88</integer>
 		</dict>
 		<key>cdnize.go</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>94</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>88</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>65</integer>
+			<integer>0</integer>
 		</dict>
 		<key>config.go</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>129</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>56</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>20</integer>
+			<integer>0</integer>
 		</dict>
 		<key>configfile.go</key>
 		<dict>
@@ -141,11 +227,62 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>downloader.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>filemon.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>utils.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>config.go</string>
+		<string>configfile.go</string>
+		<string>filemon.go</string>
+		<string>anlog.go</string>
 		<string>cdnize.go</string>
+		<string>Makefile</string>
+		<string>Makefile.i386</string>
+		<string>README.md</string>
+		<string>anscdn.go</string>
+		<string>downloader.go</string>
+		<string>utils.go</string>
 		<string>anscdn.cfg.example</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
