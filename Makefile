@@ -1,3 +1,5 @@
+include $(GOROOT)/src/Make.inc
+
 CC=$(GOBIN)/6g 
 LD=$(GOBIN)/6l 
 
@@ -11,16 +13,20 @@ OBJS =\
 	cdnize.6 \
 	anscdn.6
 
+TESTSSRC = \
+	cdnize_test.go
+
 all: anscdn
 
 anscdn: $(OBJS)
-	$(LD) -o $@ anscdn.6
+	$(LD) -o $@ anscdn.$(O)
 
 %.6 : %.go 
-	$(CC) $< 
+	$(GC) $< 
 
 % : %.6 
 	$(LD) -L . -o $@ $^ 
 
 clean:
-	rm *.6
+	rm -f *.$(O)
+	

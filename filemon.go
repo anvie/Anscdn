@@ -38,7 +38,7 @@ func isObsolete(atime_ns int64) (rv bool, old int64) {
 
 func rmObsolete(fpath string){
 	
-	f, err := os.Open(fpath,os.O_RDONLY,0)
+	f, err := os.Open(fpath)
 	if err != nil{return;}
 	
 	defer f.Close()
@@ -64,7 +64,7 @@ func rmObsolete(fpath string){
 func processDir(p string){
 	
 
-	dir, err := os.Open(p,os.O_RDONLY,0)
+	dir, err := os.Open(p)
 
 	if err != nil {
 	   anlog.Error("Cannot read dir `%s`. e: %s\n", p, err.String())
@@ -86,7 +86,7 @@ func processDir(p string){
 		}
 		pp := path.Join(p,f)
 		//fmt.Println(pp)
-		o, err := os.Open(pp,os.O_RDONLY,0)
+		o, err := os.Open(pp)
 		if err != nil {
 			continue
 		}

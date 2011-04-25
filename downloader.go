@@ -39,11 +39,11 @@ func Download(url_source string, abs_path string, strict bool, data *[]byte) (rv
 	}
 
 	// check for the mime
-	ctype := resp.Header["Content-Type"]
-	if endi := strings.IndexAny(ctype,";"); endi > 1 {
-		ctype = ctype[0:endi]
+	content_type := resp.Header.Get("Content-Type")
+	if endi := strings.IndexAny(content_type,";"); endi > 1 {
+		content_type = content_type[0:endi]
 	}else{
-		ctype = ctype[0:]
+		content_type = content_type[0:]
 	}
 
 	// fmt.Printf("Content-type: %s\n",ctype)
@@ -53,10 +53,10 @@ func Download(url_source string, abs_path string, strict bool, data *[]byte) (rv
 		}else{
 			ext_type = ext_type[0:]
 		}
-		ctype := utils.FixedMime(ctype)
+		content_type := utils.FixedMime(content_type)
 		exttype := utils.FixedMime(ext_type)
-		if exttype != ctype {
-			anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", ctype, exttype, url_source )
+		if exttype != content_type {
+			anlog.Warn("Mime type different by extension. `%s` <> `%s` path `%s`\n", content_type, exttype, url_source )
 			if strict {
 				return false, "", 0
 			}
@@ -65,7 +65,7 @@ func Download(url_source string, abs_path string, strict bool, data *[]byte) (rv
 
 	anlog.Info("File `%s` first cached from `%s`.\n", abs_path, url_source)
 
-	file, err := os.Open(abs_path,os.O_WRONLY | os.O_CREAT,0755)
+	file, err := os.OpenFile(abs_path,os.O_WRONLY | os.O_CREATE,0755)
 	if err != nil {
 		anlog.Error("Cannot create file `%s`. error: %s\n", abs_path,err.String())
 		return false, "", 0

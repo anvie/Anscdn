@@ -31,14 +31,14 @@ import (
 )
 
 const (
-	VERSION = "0.10 beta"
+	VERSION = "0.12 beta"
 )
 
 var cfg *config.AnscdnConf
 var quiet bool
 
 func file_exists(file_path string) bool{
-	file, err := os.Open(file_path, os.O_RDONLY, 0)
+	file, err := os.Open(file_path)
 	if err != nil {
 		return false
 	}
@@ -75,12 +75,12 @@ func isText(b []byte) bool {
 func setHeaderCond(con http.ResponseWriter, abs_path string, data []byte) {
 	extension := path.Ext(abs_path)
 	if ctype := mime.TypeByExtension(extension); ctype != "" {
-		con.SetHeader("Content-Type", ctype)
+		con.Header().Set("Content-Type", ctype)
 	}else{
         if isText(data) {
-            con.SetHeader("Content-Type", "text-plain; charset=utf-8")
+            con.Header().Set("Content-Type", "text-plain; charset=utf-8")
         } else {
-            con.SetHeader("Content-Type", "application/octet-stream") // generic binary
+            con.Header().Set("Content-Type", "application/octet-stream") // generic binary
         }
 	}
 }
@@ -171,7 +171,7 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		
 		// set Last-modified header
 		
-		con.SetHeader("Last-Modified", lm)
+		con.Header().Set("Last-Modified", lm)
 		
 		for {
 			bw, err := con.Write(data)
@@ -192,7 +192,7 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		
 		// if file exists, just send it
 		
-		file, err := os.Open(abs_path,os.O_RDONLY,0)
+		file, err := os.Open(abs_path)
 		
 		if err != nil{
 			fmt.Fprintf(con,"404 Not found (e)")
@@ -218,9 +218,9 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		// check for last-modified
 		//r.Header["If-Modified-Since"]
 		lm, _ := filemon.GetLastModif(file)
-		con.SetHeader("Last-Modified", lm)
+		con.Header().Set("Last-Modified", lm)
 		
-		if r.Header["If-Modified-Since"] == lm {
+		if r.Header.Get("If-Modified-Since") == lm {
 			con.WriteHeader(http.StatusNotModified)
 			return
 		}
@@ -263,7 +263,7 @@ func ClearCacheHandler(c http.ResponseWriter, r *http.Request){
 	}
 	path_to_clear = "./data/" + path_to_clear
 	
-	f, err := os.Open(path_to_clear,os.O_RDONLY,0)
+	f, err := os.Open(path_to_clear)
 	if err != nil{
 		anlog.Error("File open error %s\n", err.String())
 		write(c,"Invalid request")

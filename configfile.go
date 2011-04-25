@@ -253,7 +253,7 @@ func (c *ConfigFile) read(buf *bufio.Reader) (err os.Error) {
 func ReadConfigFile(fname string) (c *ConfigFile, err os.Error) {
 	var file *os.File;
 
-	if file, err = os.Open(fname, os.O_RDONLY, 0); err != nil {
+	if file, err = os.Open(fname); err != nil {
 		return nil, err
 	}
 
@@ -304,7 +304,7 @@ func (c *ConfigFile) write(buf *bufio.Writer, header string) (err os.Error) {
 func (c *ConfigFile) WriteConfigFile(fname string, perm uint32, header string) (err os.Error) {
 	var file *os.File;
 
-	if file, err = os.Open(fname, os.O_WRONLY|os.O_CREAT|os.O_TRUNC, perm); err != nil {
+	if file, err = os.OpenFile(fname, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm); err != nil {
 		return err
 	}
 
@@ -465,10 +465,10 @@ func (c *ConfigFile) GetInt(section string, option string) (value int, err os.Er
 
 
 // GetFloat has the same behaviour as GetString but converts the response to float.
-func (c *ConfigFile) GetFloat(section string, option string) (value float, err os.Error) {
+func (c *ConfigFile) GetFloat(section string, option string) (value float64, err os.Error) {
 	sv, err := c.GetString(section, option);
 	if err == nil {
-		value, err = strconv.Atof(sv)
+		value, err = strconv.Atof64(sv)
 	}
 
 	return value, err;

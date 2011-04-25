@@ -53,12 +53,12 @@ func Jsonize(data interface{}) string{
 }
 
 func jsonError(status, info string) string{
-	return Jsonize(map[string]string{"status":status,"info":info})
+	return Jsonize(map[string]string{"Status":status,"Info":info})
 }
 
 func Handler(c http.ResponseWriter, r *http.Request){
 
-	c.SetHeader("Content-Type", "application/json")
+	c.Header().Set("Content-Type", "application/json")
 	
 	api_key := r.FormValue("api_key")
 	
@@ -96,7 +96,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		var data_size int64 = 0
 		md5ed := hmac.NewMD5([]byte("cdnized-2194"))
 		abs_path := "/tmp/" + RandStrings(100)
-		dst_file, err := os.Open(abs_path,os.O_WRONLY | os.O_CREAT,0755)
+		dst_file, err := os.OpenFile(abs_path,os.O_WRONLY | os.O_CREATE,0755)
 		if err != nil {
 			anlog.Error("Cannot create file `%s`. error: %s\n", abs_path,err.String())
 			write(c,jsonError("failed",fmt.Sprintf("cannot create temporary data. %v\n",err)))
@@ -167,7 +167,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	
 	
 	
-	//write(c, fmt.Sprintf("{status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
+	//write(c, fmt.Sprintf("{Status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
 	
 	file_ext := path.Ext(requested_url)
 	abs_path, _ := os.Getwd()
