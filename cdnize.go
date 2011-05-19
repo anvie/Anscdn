@@ -61,6 +61,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	c.Header().Set("Content-Type", "application/json")
 	
 	api_key := r.FormValue("api_key")
+	//base_url := r.FormValue("base_url")
 	
 	if api_key != Cfg.ApiKey{
 		write(c,jsonError("failed","Invalid api key"))
