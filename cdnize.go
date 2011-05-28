@@ -20,6 +20,7 @@ import (
 	"crypto/hmac"
 	"os"
 	"syscall"
+	"strings"
 	"json"
 	"./anlog"
 	"./config"
@@ -70,6 +71,8 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	
 	requested_url := r.FormValue("u")
 	if requested_url == ""{
+		
+		// no url
 		
 		r.ParseForm()
 		file_name := r.FormValue("file_name")
@@ -130,8 +133,8 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		//fmt.Printf("content-length: %v, file: %v, file-length: %v, i: %v\n", r.ContentLength, string(data[0:]), i, i)
 		
 		hash := fmt.Sprintf("%x", md5ed.Sum())
-		file_ext := path.Ext(file_name)
-		file_name = hash + RandStrings(9) + file_ext
+		file_ext := strings.ToLower(path.Ext(file_name))
+		file_name = hash + file_ext
 		new_path, err := os.Getwd()
 		
 		new_path = path.Join(new_path, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, file_name)
@@ -166,11 +169,11 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		return
 	}
 	
-	
+	// with url
 	
 	//write(c, fmt.Sprintf("{Status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
 	
-	file_ext := path.Ext(requested_url)
+	file_ext := strings.ToLower(path.Ext(requested_url))
 	abs_path, _ := os.Getwd()
 	abs_path = path.Join(abs_path, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, RandStrings(64) + file_ext)
 	
@@ -198,7 +201,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	
 	hash := fmt.Sprintf("%x", md5ed.Sum())
 	dir, _ := path.Split(abs_path)
-	file_name := hash + RandStrings(8) + file_ext
+	file_name := hash + file_ext
 	new_path := path.Join(dir, file_name)
 	
 	if err := syscall.Rename(abs_path, new_path); err != 0{
