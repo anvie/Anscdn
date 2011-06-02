@@ -28,9 +28,7 @@
 			<key>filename</key>
 			<string>anscdn.go</string>
 			<key>lastUsed</key>
-			<date>2011-05-28T13:48:10Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2011-05-19T12:31:34Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -60,7 +58,9 @@
 			<key>filename</key>
 			<string>Makefile</string>
 			<key>lastUsed</key>
-			<date>2011-05-28T13:33:40Z</date>
+			<date>2011-05-21T06:23:18Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -155,6 +155,20 @@
 				<integer>37</integer>
 				<key>line</key>
 				<integer>76</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>16</integer>
+		</dict>
+		<key>cdnize.go</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>12</integer>
+				<key>line</key>
+				<integer>32</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
