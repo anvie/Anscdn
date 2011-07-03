@@ -174,6 +174,11 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	//write(c, fmt.Sprintf("{Status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
 	
 	file_ext := strings.ToLower(path.Ext(requested_url))
+	
+	if len(strings.TrimSpace(file_ext)) == 0{
+		file_ext = ".jpg" // set default to jpg
+	}
+	
 	abs_path, _ := os.Getwd()
 	abs_path = path.Join(abs_path, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, RandStrings(64) + file_ext)
 	
