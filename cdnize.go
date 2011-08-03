@@ -83,9 +83,9 @@ func Handler(c http.ResponseWriter, r *http.Request){
 			return
 		}
 		
-		fmt.Printf("file_name: %v\n", file_name)
+		//fmt.Printf("file_name: %v\n", file_name)
 		
-		fmt.Printf("r.MultipartForm.File: %v\n", r.MultipartForm.File)
+		//fmt.Printf("r.MultipartForm.File: %v\n", r.MultipartForm.File)
 
 		part, err := file_multipart.NextPart()
 		if err != nil{
@@ -181,7 +181,7 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	abs_path, _ := os.Getwd()
 	abs_path = path.Join(abs_path, Cfg.StoreDir[2:], Cfg.ApiStorePrefix, RandStrings(64) + file_ext)
 	
-	fmt.Printf("abs_path: %s\n", abs_path)
+	//fmt.Printf("abs_path: %s\n", abs_path)
 	
 	var data []byte;
 	rv, lm, tsize := downloader.Download(requested_url, abs_path, true, &data)
