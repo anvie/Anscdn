@@ -61,6 +61,9 @@ func Handler(c http.ResponseWriter, r *http.Request){
 
 	c.Header().Set("Content-Type", "application/json")
 	
+	
+	file_multipart, _ := r.MultipartReader()
+	
 	api_key := r.FormValue("api_key")
 	//base_url := r.FormValue("base_url")
 	
@@ -69,12 +72,10 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		return
 	}
 	
-	requested_url := r.FormValue("u")
-	if requested_url == ""{
+	if file_multipart != nil {
 		
-		// no url
-		
-		r.ParseForm()
+		// no url, parse multipart/form-data
+
 		file_name := r.FormValue("file_name")
 
 		if file_name == ""{
@@ -84,13 +85,9 @@ func Handler(c http.ResponseWriter, r *http.Request){
 		
 		fmt.Printf("file_name: %v\n", file_name)
 		
-		file, err := r.MultipartReader()
-		if err != nil{
-			write(c,jsonError("failed","cannot get multipart reader"))
-			return	
-		}
+		fmt.Printf("r.MultipartForm.File: %v\n", r.MultipartForm.File)
 
-		part, err := file.NextPart()
+		part, err := file_multipart.NextPart()
 		if err != nil{
 			write(c,jsonError("failed","no `u` nor `file`"))
 			return
@@ -170,6 +167,8 @@ func Handler(c http.ResponseWriter, r *http.Request){
 	}
 	
 	// with url
+	
+	requested_url := r.FormValue("u")
 	
 	//write(c, fmt.Sprintf("{Status: 'ok', url_path: '%s', gen: '%s'}", requested_url, x))
 	
