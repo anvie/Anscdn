@@ -25,7 +25,7 @@ import (
 
 func Download(url_source string, abs_path string, strict bool, data *[]byte) (rv bool, lm string, total_size int) {
 
-	resp, _, err := http.Get(url_source)
+	resp, err := http.Get(url_source)
 	if err != nil {
 		anlog.Error("Cannot download data from `%s`. e: %s\n", url_source, err.String())
 		return false, "", 0
