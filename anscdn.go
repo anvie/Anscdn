@@ -123,7 +123,7 @@ func MainHandler(con http.ResponseWriter, r *http.Request){
 		cext := path.Ext(url_path)
 		if len(cext) > 1{
 			cext = strings.ToLower(cext[1:])
-			exts := strings.Split(cfg.IgnoreExt,",",0)
+			exts := strings.Split(cfg.IgnoreExt,",")
 			for _, ext := range exts{
 				if cext == strings.Trim(ext," ") {
 					anlog.Warn("Ignoring `%s` by extension.\n", url_path)
